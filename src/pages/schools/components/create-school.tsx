@@ -1,6 +1,8 @@
 import React from 'react'
-import { Button, Form, Input } from 'antd'
+import { Button, Form, Input, Select } from 'antd'
 import SchoolsAPI from 'plugins/schoolsAPI'
+
+const { Option } = Select
 
 interface School {
   name: string
@@ -11,18 +13,17 @@ interface Props {
 }
 
 const CreateSchool: React.FC<Props> = ({ insertNewData }) => {
-  const submitSchool = (values: School): void => {
-    SchoolsAPI.post(
-      'schools', values
-    ).then((response) => {
+  const submitSchool = async (values: School): Promise<void> => {
+    try {
+      const response = await SchoolsAPI.post('schools', values)
       insertNewData(response.data)
-    }).catch(() => {
+    } catch (error) {
 
-    })
+    }
   }
 
   const onFinish = (values: School): void => {
-    submitSchool(values)
+    void submitSchool(values)
   }
 
   const onFinishFailed = (errorInfo: any): void => {
@@ -32,6 +33,7 @@ const CreateSchool: React.FC<Props> = ({ insertNewData }) => {
   return (
     <Form
       name="basic"
+      layout="vertical"
       labelCol={{ span: 8 }}
       wrapperCol={{ span: 16 }}
       initialValues={{ remember: true }}
@@ -46,6 +48,17 @@ const CreateSchool: React.FC<Props> = ({ insertNewData }) => {
       >
         <Input />
       </Form.Item>
+
+      <Form.Item name="gender" label="Gender" rules={[{ required: true }]}>
+          <Select
+            placeholder="Select a option and change input text above"
+            allowClear
+          >
+            <Option value="male">male</Option>
+            <Option value="female">female</Option>
+            <Option value="other">other</Option>
+          </Select>
+        </Form.Item>
 
       <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
         <Button type="primary" htmlType="submit">

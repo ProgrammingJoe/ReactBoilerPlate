@@ -1,6 +1,16 @@
 import React from 'react'
-import { Space, Table, Button } from 'antd'
+import { Space, Table, Button, Typography } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
+import styled from 'styled-components'
+
+const { Title } = Typography
+
+const TableHeader = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+`
 
 const columns: ColumnsType<School> = [
   {
@@ -33,11 +43,14 @@ interface Props {
 const SchoolTable: React.FC<Props> = ({ schools, setIsFormVisible }) => {
   return (
     <div>
-      <Button
-        type="primary"
-        onClick={() => setIsFormVisible(true)}>
-          Create School
-      </Button>
+      <TableHeader>
+        <Title level={2}>Schools</Title>
+        <Button
+          type="primary"
+          onClick={() => setIsFormVisible(true)}>
+            Create School
+        </Button>
+      </TableHeader>
       <Table columns={columns} dataSource={schools} />
     </div>
   )

@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { Layout } from 'antd'
 
 import SchoolsAPI from 'plugins/schoolsAPI'
 import SchoolTable from './components/school-table'
 import CreateSchool from './components/create-school'
-
-const { Content } = Layout
+import BasicPage from 'library/page-templates/basic-page'
 
 const Schools: React.FunctionComponent = () => {
   const [schools, setSchools] = useState<any[]>([])
@@ -33,14 +31,12 @@ const Schools: React.FunctionComponent = () => {
   }
 
   return (
-    <Layout>
-      <Content>
-        { isFormVisible
-          ? <CreateSchool insertNewData={insertNewData}/>
-          : <SchoolTable schools={schools} setIsFormVisible={setIsFormVisible}/>
-        }
-      </Content>
-    </Layout>
+    <BasicPage>
+      { isFormVisible
+        ? <CreateSchool insertNewData={insertNewData}/>
+        : <SchoolTable schools={schools} setIsFormVisible={setIsFormVisible}/>
+      }
+    </BasicPage>
   )
 }
 
