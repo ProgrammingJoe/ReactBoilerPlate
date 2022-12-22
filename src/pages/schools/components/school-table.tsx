@@ -1,39 +1,24 @@
 import React from 'react'
-import { Space, Table, Button, Typography } from 'antd'
+import { Table, Button, Typography } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
-import styled from 'styled-components'
+import { TableHeader } from 'library/tables'
 
+import { School } from 'types'
 const { Title } = Typography
-
-const TableHeader = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-`
 
 const columns: ColumnsType<School> = [
   {
     title: 'Name',
     dataIndex: 'name',
     key: 'name',
-    render: (text) => <a>{text}</a>
+    render: (text) => <p>{text}</p>
   },
   {
     title: 'Action',
     key: 'action',
-    render: (_, record) => (
-      <Space size="middle">
-        <a>Invite {record.name}</a>
-        <a>Delete</a>
-      </Space>
-    )
+    render: (_) => (<p>something</p>)
   }
 ]
-
-interface School {
-  name: string
-}
 
 interface Props {
   schools: School[]

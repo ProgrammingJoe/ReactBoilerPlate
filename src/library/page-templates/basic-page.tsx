@@ -7,6 +7,7 @@ import type { MenuProps } from 'antd'
 import { Breadcrumb, Layout, Menu } from 'antd'
 import { PageContainer } from 'library/containers'
 import { useNavigate, useLocation } from 'react-router-dom'
+import { ProviderProps } from 'types'
 
 const { Content, Footer, Sider } = Layout
 
@@ -35,11 +36,7 @@ const items: MenuItem[] = [
   getItem('Schools', '2', '/schools', <DesktopOutlined />)
 ]
 
-interface Props {
-  children: JSX.Element | JSX.Element[]
-}
-
-const BasicPage: React.FC<Props> = ({ children }) => {
+const BasicPage: React.FC<ProviderProps> = ({ children }) => {
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -56,7 +53,6 @@ const BasicPage: React.FC<Props> = ({ children }) => {
     if (item !== undefined) navigate(item.location)
   }
 
-  console.log(defaultState)
   return (
     <Layout style={{ minHeight: '100vh' }}>
       <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
