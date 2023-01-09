@@ -5,22 +5,27 @@ import SchoolTable from './components/school-table'
 import CreateSchool from './components/create-school'
 import BasicPage from 'library/page-templates/basic-page'
 import { School } from 'types'
+import { TABLE_PAGE_SIZE } from 'utils'
 
 const Schools: React.FunctionComponent = () => {
   const [schools, setSchools] = useState<School[]>([])
+  const [total, setTotal] = useState<number>(0)
   const [isFormVisible, setIsFormVisible] = useState(false)
 
-  useEffect(() => {
-    const getSchools = async (): Promise<void> => {
-      try {
-        const response = await SchoolsAPI.get('schools')
-        setSchools(response.data)
-      } catch (error) {
-        console.log('oh no request failed')
-      }
-    }
+  const getSchools = async (page: number): Promise<void> => {
+    const offset = page - 1
 
-    void getSchools()
+    try {
+      const response = await SchoolsAPI.get(`schools/?offset=${offset * TABLE_PAGE_SIZE}&limit=${TABLE_PAGE_SIZE}`)
+      setSchools(response.data.results)
+      setTotal(response.data.count)
+    } catch (error) {
+      console.log('oh no request failed')
+    }
+  }
+
+  useEffect(() => {
+    void getSchools(1)
   }, [])
 
   const insertNewData = (school: any): void => {
@@ -31,11 +36,20 @@ const Schools: React.FunctionComponent = () => {
     setSchools(filteredData)
   }
 
+  const getSchoolPage = (page: number): void => {
+    void getSchools(page)
+  }
+
   return (
     <BasicPage>
       { isFormVisible
         ? <CreateSchool insertNewData={insertNewData}/>
-        : <SchoolTable schools={schools} setIsFormVisible={setIsFormVisible}/>
+        : <SchoolTable
+            schools={schools}
+            setIsFormVisible={setIsFormVisible}
+            getSchoolPage={getSchoolPage}
+            total={total}
+          />
       }
     </BasicPage>
   )

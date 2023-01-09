@@ -1,5 +1,7 @@
 export interface School {
   name: string
+  district: District
+  category: string
 }
 
 export interface District {

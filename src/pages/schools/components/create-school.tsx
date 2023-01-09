@@ -20,7 +20,7 @@ const CreateSchool: React.FC<Props> = ({ insertNewData }) => {
     const getDistricts = async (): Promise<void> => {
       try {
         const response = await SchoolsAPI.get('districts')
-        setDistricts(response.data)
+        setDistricts(response.data.results)
       } catch (error) {
         console.log('oh no request failed')
       }
@@ -76,7 +76,7 @@ const CreateSchool: React.FC<Props> = ({ insertNewData }) => {
         </Select>
       </Form.Item>
 
-      <Form.Item name="district" label="District" rules={[{ required: true }]}>
+      <Form.Item name="district_id" label="District" rules={[{ required: true }]}>
         <Select
           placeholder="Select a option and change input text above"
           allowClear

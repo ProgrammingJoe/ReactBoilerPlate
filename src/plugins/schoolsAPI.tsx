@@ -6,9 +6,9 @@ const instance = axios.create({
 })
 
 instance.interceptors.request.use((config: AxiosRequestConfig) => {
-  if (config.url !== undefined && config.url[config.url.length - 1] !== '/') {
-    config.url += '/'
-  }
+  // if (config.url !== undefined && config.url[config.url.length - 1] !== '/') {
+  //   config.url += '/'
+  // }
   return config
 })
 
