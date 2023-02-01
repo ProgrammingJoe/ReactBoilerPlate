@@ -4,40 +4,46 @@ import type { ColumnsType } from 'antd/es/table'
 import { TableHeader } from 'library/tables'
 import { useSelector } from 'react-redux'
 
-import { School, District } from 'types'
+import { School, District, SelectOption } from 'types'
 import { Store } from 'store/index'
 import { TABLE_PAGE_SIZE } from 'utils'
-import TableFilterBar from 'library/table-filter-bar'
+import TableFilterBar from 'pages/schools/components/school-table-filters'
 const { Title } = Typography
 
 interface Props {
   schools: School[]
   setIsFormVisible: (value: boolean) => void
-  getSchoolPage: (page: number) => void
+  getSchoolPage: (page: number, filter: string) => void
   total: number
 }
 
 const SchoolTable: React.FC<Props> = ({ schools, setIsFormVisible, getSchoolPage, total }) => {
-  const highschoolCategories: any = useSelector((state: Store) => state.constants.value.highschoolCategories)
+  const schoolCategories: any = useSelector((state: Store) => state.constants.value.schoolCategories)
 
   const columns: ColumnsType<School> = [
     {
       title: 'Name',
       dataIndex: 'name',
       key: 'name',
-      render: (name) => <p>{name}</p>
+      render: (name) => <span>{name}</span>
     },
     {
       title: 'Category',
       dataIndex: 'category',
       key: 'category',
-      render: (category) => <p>{highschoolCategories[category]}</p>
+      render: (category) => <span>{schoolCategories.find((c: SelectOption) => c.value === category).label}</span>
     },
     {
       title: 'District',
       dataIndex: 'district',
       key: 'district',
-      render: (district: District) => <p>{district.name}</p>
+      render: (district: District) => <span>{district.name}</span>
+    },
+    {
+      title: 'Student Count',
+      dataIndex: 'number_of_students',
+      key: 'number_of_students',
+      render: (numberOfStudents) => <span>{numberOfStudents}</span>
     }
   ]
 
@@ -51,14 +57,19 @@ const SchoolTable: React.FC<Props> = ({ schools, setIsFormVisible, getSchoolPage
             Create School
         </Button>
       </TableHeader>
-      <TableFilterBar/>
       <Table
+        size="small"
+        title={() => (
+          <TableFilterBar
+            onFilterChanged={(filter: string) => getSchoolPage(1, filter)}
+          />
+        )}
         columns={columns}
         dataSource={schools}
         pagination={{
           pageSize: TABLE_PAGE_SIZE,
           total,
-          onChange: getSchoolPage
+          onChange: (page) => getSchoolPage(page, '')
         }}
       />
     </div>

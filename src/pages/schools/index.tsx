@@ -12,11 +12,11 @@ const Schools: React.FunctionComponent = () => {
   const [total, setTotal] = useState<number>(0)
   const [isFormVisible, setIsFormVisible] = useState(false)
 
-  const getSchools = async (page: number): Promise<void> => {
+  const getSchools = async (page: number, filter: string): Promise<void> => {
     const offset = page - 1
 
     try {
-      const response = await SchoolsAPI.get(`schools/?offset=${offset * TABLE_PAGE_SIZE}&limit=${TABLE_PAGE_SIZE}`)
+      const response = await SchoolsAPI.get(`schools/?${filter}&offset=${offset * TABLE_PAGE_SIZE}&limit=${TABLE_PAGE_SIZE}`)
       setSchools(response.data.results)
       setTotal(response.data.count)
     } catch (error) {
@@ -25,7 +25,7 @@ const Schools: React.FunctionComponent = () => {
   }
 
   useEffect(() => {
-    void getSchools(1)
+    void getSchools(1, '')
   }, [])
 
   const insertNewData = (school: any): void => {
@@ -36,8 +36,8 @@ const Schools: React.FunctionComponent = () => {
     setSchools(filteredData)
   }
 
-  const getSchoolPage = (page: number): void => {
-    void getSchools(page)
+  const getSchoolPage = (page: number, filter: string): void => {
+    void getSchools(page, filter)
   }
 
   return (

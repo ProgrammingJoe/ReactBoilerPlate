@@ -13,7 +13,7 @@ interface Props {
 }
 
 const CreateSchool: React.FC<Props> = ({ insertNewData }) => {
-  const highschoolCategories = useSelector((state: Store) => state.constants.value.highschoolCategories)
+  const schoolCategories = useSelector((state: Store) => state.constants.value.schoolCategories)
   const [districts, setDistricts] = useState<District[]>([])
 
   useEffect(() => {
@@ -31,7 +31,7 @@ const CreateSchool: React.FC<Props> = ({ insertNewData }) => {
 
   const submitSchool = async (values: School): Promise<void> => {
     try {
-      const response = await SchoolsAPI.post('schools', values)
+      const response = await SchoolsAPI.post('schools/', values)
       insertNewData(response.data)
     } catch (error) {
 
@@ -70,8 +70,8 @@ const CreateSchool: React.FC<Props> = ({ insertNewData }) => {
           placeholder="Select a option and change input text above"
           allowClear
         >
-          {Object.entries(highschoolCategories).map((key) => (
-            <Option value={key[0]} key={key[0]}>{ key[1] }</Option>
+          {schoolCategories.map((key) => (
+            <Option value={key.value} key={key.value}>{ key.label }</Option>
           ))}
         </Select>
       </Form.Item>

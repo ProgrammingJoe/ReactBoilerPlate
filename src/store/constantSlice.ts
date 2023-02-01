@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import SchoolsAPI from 'plugins/schoolsAPI'
+import { SelectOption } from 'types'
 
 export const fetchConstants = createAsyncThunk(
   'constants/fetch',
@@ -10,7 +11,7 @@ export const fetchConstants = createAsyncThunk(
 )
 
 interface Constants {
-  highschoolCategories: Object
+  schoolCategories: SelectOption[]
 }
 
 export interface ConstantsState {
@@ -20,7 +21,7 @@ export interface ConstantsState {
 
 const initialState: ConstantsState = {
   value: {
-    highschoolCategories: []
+    schoolCategories: []
   },
   loading: 'idle'
 }

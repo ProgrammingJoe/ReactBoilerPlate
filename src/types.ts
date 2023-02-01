@@ -13,3 +13,8 @@ export interface District {
 export interface ProviderProps {
   children: JSX.Element | JSX.Element[]
 }
+
+export interface SelectOption {
+  value: string
+  label: string
+}
