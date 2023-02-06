@@ -2,18 +2,22 @@ import React, { useState, ReactNode } from 'react'
 import { Button, Card, Select, Space } from 'antd'
 import { PlusCircleOutlined, CloseCircleOutlined } from '@ant-design/icons'
 import { SelectOption } from 'types'
-import { FilterWrapper, PillWrapper, FilterValue } from 'library/tables/table-filter-wrappers'
+import { FilterWrapper, PillWrapper, FilterValue, OPEN_PANEL_NONE } from 'library/tables/table-filter-wrappers'
 
 interface Props {
   name: string
+  filterId: number
   options: SelectOption[]
+  currentOpenPanel: number
+  openPanel: Function
   applyFilter: Function
 }
 
-const SelectTableFilter: React.FC<Props> = ({ name, options, applyFilter }) => {
+const SelectTableFilter: React.FC<Props> = ({
+  name, options, applyFilter, currentOpenPanel, openPanel, filterId
+}) => {
   const [option, setOption] = useState('')
   const [appliedOption, setAppliedOption] = useState<string>('')
-  const [isPanelOpen, setIsPanelOpen] = useState(false)
 
   const onApply = (): void => {
     setAppliedOption(option)
@@ -21,13 +25,13 @@ const SelectTableFilter: React.FC<Props> = ({ name, options, applyFilter }) => {
     const filter = `${name.toLowerCase()}=${option}`
 
     applyFilter(filter)
-    setIsPanelOpen(false)
+    openPanel(OPEN_PANEL_NONE)
   }
 
   const clearSelection = (): void => {
     setAppliedOption('')
     applyFilter('')
-    setIsPanelOpen(false)
+    openPanel(OPEN_PANEL_NONE)
   }
 
   const getMethodDisplayValue = (currentOption: string): string => {
@@ -52,6 +56,7 @@ const SelectTableFilter: React.FC<Props> = ({ name, options, applyFilter }) => {
   }
 
   const isFilterActive = appliedOption !== ''
+  const isPanelOpen = filterId === currentOpenPanel
   return (
     <FilterWrapper>
       {isPanelOpen && <Card
@@ -85,13 +90,13 @@ const SelectTableFilter: React.FC<Props> = ({ name, options, applyFilter }) => {
             type="text"
             size="small"
             icon={<PlusCircleOutlined />}
-            onClick={() => setIsPanelOpen(true)}
+            onClick={() => openPanel(filterId)}
           />
             )}
         <Button
           type="text"
           size="small"
-          onClick={() => setIsPanelOpen(true)}
+          onClick={() => openPanel(filterId)}
         >
           { getPillDisplayValue() }
         </Button>

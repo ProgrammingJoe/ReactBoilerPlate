@@ -1,21 +1,21 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import styled from 'styled-components'
 
 import QuantityTableFilter from 'library/tables/quantity-table-filter'
 import SelectTableFilter from 'library/tables/select-table-filter'
+import { TableFilterBarWrapper, OPEN_PANEL_NONE } from 'library/tables/table-filter-wrappers'
 
 import { Store } from 'store/index'
-
-const Wrapper = styled.div`
-
-`
 
 interface Props {
   onFilterChanged: Function
 }
 
 const SchoolTableFilters: React.FunctionComponent<Props> = ({ onFilterChanged }) => {
+  const OPEN_PANEL_STUDENTS = 1
+  const OPEN_PANEL_CATEGORY = 2
+
+  const [openPanel, setOpenPanel] = useState(OPEN_PANEL_NONE)
   const [amountFilter, setAmountFilter] = useState('')
   const [categoryFilter, setCategoryFilter] = useState('')
   const schoolCategories = useSelector((state: Store) => state.constants.value.schoolCategories)
@@ -41,17 +41,23 @@ const SchoolTableFilters: React.FunctionComponent<Props> = ({ onFilterChanged })
     onFilterChanged(filter)
   }
 
-  return <Wrapper>
-    {false && <QuantityTableFilter
+  return <TableFilterBarWrapper>
+    <QuantityTableFilter
+      filterId={OPEN_PANEL_STUDENTS}
+      currentOpenPanel={openPanel}
+      openPanel={(panel: number) => setOpenPanel(panel)}
       name="Students"
       applyFilter={applyAmountFilter}
-    />}
+    />
     <SelectTableFilter
+      filterId={OPEN_PANEL_CATEGORY}
+      currentOpenPanel={openPanel}
+      openPanel={(panel: number) => setOpenPanel(panel)}
       name="Category"
       applyFilter={setCategoryFilter}
       options={schoolCategories}
     />
-  </Wrapper>
+  </TableFilterBarWrapper>
 }
 
 export default SchoolTableFilters

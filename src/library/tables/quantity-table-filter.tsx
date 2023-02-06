@@ -1,32 +1,43 @@
-import React, { useState } from 'react'
+import React, { useState, ReactNode } from 'react'
 import { Button, Card, Select, Input, Space } from 'antd'
 import { PlusCircleOutlined, ArrowRightOutlined, CloseCircleOutlined } from '@ant-design/icons'
-import { FilterWrapper } from 'library/tables/table-filter-wrappers'
+import { FilterWrapper, PillWrapper, FilterValue, OPEN_PANEL_NONE } from 'library/tables/table-filter-wrappers'
 
 interface Props {
   name: string
+  filterId: number
+  currentOpenPanel: number
+  openPanel: Function
   applyFilter: Function
 }
 
-const QuantityTableFilter: React.FunctionComponent<Props> = ({ name, applyFilter }) => {
+const QuantityTableFilter: React.FunctionComponent<Props> = ({
+  name, applyFilter, currentOpenPanel, openPanel, filterId
+}) => {
   const [method, setMethod] = useState<string>('__exact')
   const [value, setValue] = useState<number>(NaN)
   const [upperValue, setUpperValue] = useState(0)
   const [appliedMethod, setAppliedMethod] = useState<string>('')
   const [appliedValue, setAppliedValue] = useState(0)
-  const [isPanelOpen, setIsPanelOpen] = useState(false)
 
   const onApply = (): void => {
     setAppliedMethod(method)
     setAppliedValue(value)
 
-    let filter = `${name.toLowerCase()}${method}=${value}`
+    let filter = `${name.toLowerCase()}${method}=${value}&`
     if (method === IS_BETWEEN) {
       filter = `${name.toLowerCase()}__gte=${value}&${name.toLowerCase()}__lte=${upperValue}&`
     }
 
     applyFilter(filter)
-    setIsPanelOpen(false)
+    openPanel(OPEN_PANEL_NONE)
+  }
+
+  const clearSelection = (): void => {
+    setAppliedValue(0)
+    setAppliedMethod('')
+    applyFilter('')
+    openPanel(OPEN_PANEL_NONE)
   }
 
   const IS_BETWEEN = '__between'
@@ -57,16 +68,22 @@ const QuantityTableFilter: React.FunctionComponent<Props> = ({ name, applyFilter
     return ''
   }
 
-  const getPillDisplayValue = (): string => {
+  const getPillDisplayValue = (): ReactNode => {
     if (appliedMethod !== '' && !isNaN(appliedValue)) {
-      return `${getMethodDisplayValue(appliedMethod)} ${appliedValue}`
+      return (
+        <FilterValue>
+          <span>{name} | </span>
+          <span>{`${getMethodDisplayValue(appliedMethod)} ${appliedValue}`}</span>
+        </FilterValue>
+      )
     }
 
-    return name
+    return <span>{ name }</span>
   }
 
   const isBetweenFilter = method === IS_BETWEEN
   const isFilterActive = !isNaN(value)
+  const isPanelOpen = currentOpenPanel === filterId
   return (
     <FilterWrapper>
       {isPanelOpen && <Card
@@ -100,15 +117,32 @@ const QuantityTableFilter: React.FunctionComponent<Props> = ({ name, applyFilter
           <Button type="primary" block onClick={() => onApply()}>Apply</Button>
         </Space>
       </Card>}
-      <Button
-        type="dashed"
-        size="small"
-        icon={<PlusCircleOutlined />}
-        onClick={() => setIsPanelOpen(true)}
-      >
-        { getPillDisplayValue() }
-        { isFilterActive && <CloseCircleOutlined/> }
-      </Button>
+      <PillWrapper>
+        { isFilterActive
+          ? (
+          <Button
+            type="text"
+            size="small"
+            icon={<CloseCircleOutlined />}
+            onClick={() => clearSelection()}
+          />
+            )
+          : (
+          <Button
+            type="text"
+            size="small"
+            icon={<PlusCircleOutlined />}
+            onClick={() => openPanel(filterId)}
+          />
+            )}
+        <Button
+          type="text"
+          size="small"
+          onClick={() => openPanel(filterId)}
+        >
+          { getPillDisplayValue() }
+        </Button>
+      </PillWrapper>
     </FilterWrapper>
 
   )

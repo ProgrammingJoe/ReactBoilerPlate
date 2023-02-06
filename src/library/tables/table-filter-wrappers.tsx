@@ -1,5 +1,14 @@
 import styled from 'styled-components'
 
+export const OPEN_PANEL_NONE = 0
+
+export const TableFilterBarWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+`
+
 export const FilterWrapper = styled.span`
   position: relative;
   z-index: 20;
