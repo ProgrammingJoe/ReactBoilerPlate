@@ -1,24 +1,36 @@
 import React from 'react'
-import { Table, Button, Typography } from 'antd'
+import { Table } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
-import { TableHeader } from 'library/tables'
 import { useSelector } from 'react-redux'
+import styled from 'styled-components'
 
 import { School, District, SelectOption } from 'types'
 import { Store } from 'store/index'
 import { TABLE_PAGE_SIZE } from 'utils'
 import TableFilterBar from 'pages/schools/components/school-table-filters'
-const { Title } = Typography
 
 interface Props {
   schools: School[]
-  setIsFormVisible: (value: boolean) => void
   getSchoolPage: (page: number, filter: string) => void
   total: number
 }
 
-const SchoolTable: React.FC<Props> = ({ schools, setIsFormVisible, getSchoolPage, total }) => {
+const Wrapper = styled.div`
+  flex: 1;
+`
+
+const SchoolTable: React.FC<Props> = ({ schools, getSchoolPage, total }) => {
   const schoolCategories: any = useSelector((state: Store) => state.constants.value.schoolCategories)
+
+  const getSchoolCategory = (category: string): string => {
+    const categoryOption = schoolCategories.find((c: SelectOption) => c.value === category)
+
+    if (categoryOption != null) {
+      return categoryOption.label
+    }
+
+    return ''
+  }
 
   const columns: ColumnsType<School> = [
     {
@@ -31,7 +43,7 @@ const SchoolTable: React.FC<Props> = ({ schools, setIsFormVisible, getSchoolPage
       title: 'Category',
       dataIndex: 'category',
       key: 'category',
-      render: (category) => <span>{schoolCategories.find((c: SelectOption) => c.value === category).label}</span>
+      render: (category) => <span>{getSchoolCategory(category)}</span>
     },
     {
       title: 'District',
@@ -48,15 +60,7 @@ const SchoolTable: React.FC<Props> = ({ schools, setIsFormVisible, getSchoolPage
   ]
 
   return (
-    <div>
-      <TableHeader>
-        <Title level={2}>Schools</Title>
-        <Button
-          type="primary"
-          onClick={() => setIsFormVisible(true)}>
-            Create School
-        </Button>
-      </TableHeader>
+    <Wrapper>
       <Table
         size="small"
         title={() => (
@@ -72,7 +76,7 @@ const SchoolTable: React.FC<Props> = ({ schools, setIsFormVisible, getSchoolPage
           onChange: (page) => getSchoolPage(page, '')
         }}
       />
-    </div>
+    </Wrapper>
   )
 }
 

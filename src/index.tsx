@@ -7,7 +7,9 @@ import router from './router'
 import GlobalStyle from './globalStyles'
 import store from 'store/index'
 import { Provider } from 'react-redux'
+
 import BaseDataProvider from 'providers/baseDataProvider'
+import ThemeProvider from 'providers/themeProvider'
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -15,12 +17,14 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <Provider store={store}>
-    <BaseDataProvider>
+    <BaseDataProvider/>
+
+    <ThemeProvider>
       <React.StrictMode>
         <GlobalStyle/>
         <RouterProvider router={router} />
       </React.StrictMode>
-    </BaseDataProvider>
+    </ThemeProvider>
   </Provider>
 
 )

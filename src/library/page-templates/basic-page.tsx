@@ -4,7 +4,7 @@ import {
   PieChartOutlined
 } from '@ant-design/icons'
 import type { MenuProps } from 'antd'
-import { Breadcrumb, Layout, Menu } from 'antd'
+import { Layout, Menu } from 'antd'
 import { PageContainer } from 'library/containers'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { ProviderProps } from 'types'
@@ -54,7 +54,7 @@ const BasicPage: React.FC<ProviderProps> = ({ children }) => {
   }
 
   return (
-    <Layout style={{ minHeight: '100vh' }}>
+    <Layout style={{ minHeight: '100vh', maxWidth: '1280px' }}>
       <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
         <div style={{ height: 32, margin: 16, background: 'rgba(255, 255, 255, 0.2)' }} />
         <Menu
@@ -65,18 +65,13 @@ const BasicPage: React.FC<ProviderProps> = ({ children }) => {
           onClick={(item) => navigateMenuItem(item.key)}
         />
       </Sider>
-      <Layout className="site-layout">
+      <Layout>
         <Content style={{ margin: '0 16px' }}>
-          <Breadcrumb style={{ margin: '16px 0' }}>
-            <Breadcrumb.Item>User</Breadcrumb.Item>
-            <Breadcrumb.Item>Bill</Breadcrumb.Item>
-          </Breadcrumb>
-
           <PageContainer>
             { children }
           </PageContainer>
         </Content>
-        <Footer style={{ textAlign: 'center' }}>Ant Design ©2018 Created by Ant UED</Footer>
+        <Footer style={{ textAlign: 'center' }}>Joe Czepil on Youtube</Footer>
       </Layout>
     </Layout>
   )

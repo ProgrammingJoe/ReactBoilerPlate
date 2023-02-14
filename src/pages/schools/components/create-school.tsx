@@ -1,18 +1,22 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Form, Input, Select } from 'antd'
+import { Button, Form, Input, Select, Typography } from 'antd'
+import { CloseOutlined } from '@ant-design/icons'
 import SchoolsAPI from 'plugins/schoolsAPI'
 import { useSelector } from 'react-redux'
+import { FormHeader } from 'library/forms/form-wrappers'
 
 import { School, District } from 'types'
 import { Store } from 'store/index'
 
 const { Option } = Select
+const { Title } = Typography
 
 interface Props {
   insertNewData: (value: School) => void
+  hideForm: Function
 }
 
-const CreateSchool: React.FC<Props> = ({ insertNewData }) => {
+const CreateSchool: React.FC<Props> = ({ insertNewData, hideForm }) => {
   const schoolCategories = useSelector((state: Store) => state.constants.value.schoolCategories)
   const [districts, setDistricts] = useState<District[]>([])
 
@@ -50,13 +54,24 @@ const CreateSchool: React.FC<Props> = ({ insertNewData }) => {
     <Form
       name="basic"
       layout="vertical"
-      labelCol={{ span: 8 }}
-      wrapperCol={{ span: 16 }}
+      labelAlign="left"
       initialValues={{ remember: true }}
       onFinish={onFinish}
       onFinishFailed={onFinishFailed}
       autoComplete="off"
+      requiredMark="optional"
+      style={{
+        maxWidth: 320,
+        backgroundColor: 'white',
+        padding: 12,
+        borderRadius: 6
+      }}
     >
+      <FormHeader>
+        <Title level={4} style={{ margin: '0' }}>Create School</Title>
+        <Button type="default" onClick={() => hideForm()} shape="circle" icon={<CloseOutlined />}/>
+      </FormHeader>
+
       <Form.Item
         label="Name"
         name="name"
@@ -87,7 +102,7 @@ const CreateSchool: React.FC<Props> = ({ insertNewData }) => {
         </Select>
       </Form.Item>
 
-      <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+      <Form.Item style={{ textAlign: 'right' }}>
         <Button type="primary" htmlType="submit">
           Create
         </Button>

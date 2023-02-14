@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { Typography, Button } from 'antd'
 
 import SchoolsAPI from 'plugins/schoolsAPI'
 import SchoolTable from './components/school-table'
@@ -6,6 +7,9 @@ import CreateSchool from './components/create-school'
 import BasicPage from 'library/page-templates/basic-page'
 import { School } from 'types'
 import { TABLE_PAGE_SIZE } from 'utils'
+import { InlineTableFormSpace, TableHeader } from 'library/tables/table-wrappers'
+
+const { Title } = Typography
 
 const Schools: React.FunctionComponent = () => {
   const [schools, setSchools] = useState<School[]>([])
@@ -16,7 +20,9 @@ const Schools: React.FunctionComponent = () => {
     const offset = page - 1
 
     try {
-      const response = await SchoolsAPI.get(`schools/?${filter}&offset=${offset * TABLE_PAGE_SIZE}&limit=${TABLE_PAGE_SIZE}`)
+      const response = await SchoolsAPI.get(
+        `schools/?${filter}&offset=${offset * TABLE_PAGE_SIZE}&limit=${TABLE_PAGE_SIZE}`
+      )
       setSchools(response.data.results)
       setTotal(response.data.count)
     } catch (error) {
@@ -42,15 +48,25 @@ const Schools: React.FunctionComponent = () => {
 
   return (
     <BasicPage>
-      { isFormVisible
-        ? <CreateSchool insertNewData={insertNewData}/>
-        : <SchoolTable
-            schools={schools}
-            setIsFormVisible={setIsFormVisible}
-            getSchoolPage={getSchoolPage}
-            total={total}
-          />
-      }
+      <TableHeader>
+        <Title level={2}>Schools</Title>
+        {!isFormVisible && (<Button
+          type="primary"
+          onClick={() => setIsFormVisible(true)}>
+            Create School
+        </Button>)}
+      </TableHeader>
+      <InlineTableFormSpace>
+        <SchoolTable
+          schools={schools}
+          getSchoolPage={getSchoolPage}
+          total={total}
+        />
+        {isFormVisible && (<CreateSchool
+          insertNewData={insertNewData}
+          hideForm={() => setIsFormVisible(false)}
+        />)}
+      </InlineTableFormSpace>
     </BasicPage>
   )
 }
