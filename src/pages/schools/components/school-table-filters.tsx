@@ -55,7 +55,7 @@ const SchoolTableFilters: React.FunctionComponent<Props> = ({ onFilterChanged })
       openPanel={(panel: number) => setOpenPanel(panel)}
       name="Category"
       applyFilter={setCategoryFilter}
-      options={schoolCategories}
+      options={schoolCategories.options}
     />
   </TableFilterBarWrapper>
 }

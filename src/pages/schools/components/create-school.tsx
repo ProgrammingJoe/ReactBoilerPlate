@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import { Button, Form, Input, Select, Typography } from 'antd'
 import { CloseOutlined } from '@ant-design/icons'
-import SchoolsAPI from 'plugins/schoolsAPI'
+import SchoolsAPI, { getFirstErrorMessage } from 'plugins/schoolsAPI'
 import { useSelector } from 'react-redux'
-import { FormHeader } from 'library/forms/form-wrappers'
+import { FormHeader, FormFooter } from 'library/forms/form-wrappers'
 
 import { School, District } from 'types'
 import { Store } from 'store/index'
 
 const { Option } = Select
-const { Title } = Typography
+const { Title, Text } = Typography
 
 interface Props {
   insertNewData: (value: School) => void
@@ -19,6 +19,7 @@ interface Props {
 const CreateSchool: React.FC<Props> = ({ insertNewData, hideForm }) => {
   const schoolCategories = useSelector((state: Store) => state.constants.value.schoolCategories)
   const [districts, setDistricts] = useState<District[]>([])
+  const [errorMessage, setErrorMessage] = useState('')
 
   useEffect(() => {
     const getDistricts = async (): Promise<void> => {
@@ -37,13 +38,22 @@ const CreateSchool: React.FC<Props> = ({ insertNewData, hideForm }) => {
     try {
       const response = await SchoolsAPI.post('schools/', values)
       insertNewData(response.data)
-    } catch (error) {
-
+    } catch (err) {
+      setErrorMessage(getFirstErrorMessage(err))
     }
   }
 
   const onFinish = (values: School): void => {
-    void submitSchool(values)
+    let formHasErrors = false
+
+    if (values.category === schoolCategories.Highschool) {
+      formHasErrors = true
+      setErrorMessage('You cannot choose highschool because I said so!')
+    }
+
+    if (!formHasErrors) {
+      void submitSchool(values)
+    }
   }
 
   const onFinishFailed = (errorInfo: any): void => {
@@ -61,7 +71,7 @@ const CreateSchool: React.FC<Props> = ({ insertNewData, hideForm }) => {
       autoComplete="off"
       requiredMark="optional"
       style={{
-        maxWidth: 320,
+        width: 320,
         backgroundColor: 'white',
         padding: 12,
         borderRadius: 6
@@ -80,18 +90,24 @@ const CreateSchool: React.FC<Props> = ({ insertNewData, hideForm }) => {
         <Input />
       </Form.Item>
 
-      <Form.Item name="category" label="Category" rules={[{ required: true }]}>
+      <Form.Item
+        name="category"
+        label="Category"
+        rules={[{ required: true, message: 'Please select a category' }]}>
         <Select
           placeholder="Select a option and change input text above"
           allowClear
         >
-          {schoolCategories.map((key) => (
+          {schoolCategories.options.map((key) => (
             <Option value={key.value} key={key.value}>{ key.label }</Option>
           ))}
         </Select>
       </Form.Item>
 
-      <Form.Item name="district_id" label="District" rules={[{ required: true }]}>
+      <Form.Item
+        name="district_id"
+        label="District"
+        rules={[{ required: true, message: 'Please select a district' }]}>
         <Select
           placeholder="Select a option and change input text above"
           allowClear
@@ -102,11 +118,16 @@ const CreateSchool: React.FC<Props> = ({ insertNewData, hideForm }) => {
         </Select>
       </Form.Item>
 
-      <Form.Item style={{ textAlign: 'right' }}>
-        <Button type="primary" htmlType="submit">
-          Create
-        </Button>
-      </Form.Item>
+      <FormFooter>
+        <div>
+          {errorMessage !== '' && <Text type="danger">{ errorMessage }</Text>}
+        </div>
+        <Form.Item style={{ textAlign: 'right' }}>
+          <Button type="primary" htmlType="submit">
+            Create
+          </Button>
+        </Form.Item>
+      </FormFooter>
     </Form>
   )
 }

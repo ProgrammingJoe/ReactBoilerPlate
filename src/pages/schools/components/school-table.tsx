@@ -11,6 +11,7 @@ import TableFilterBar from 'pages/schools/components/school-table-filters'
 
 interface Props {
   schools: School[]
+  highlightedRows: School[]
   getSchoolPage: (page: number, filter: string) => void
   total: number
 }
@@ -23,7 +24,7 @@ const SchoolTable: React.FC<Props> = ({ schools, getSchoolPage, total }) => {
   const schoolCategories: any = useSelector((state: Store) => state.constants.value.schoolCategories)
 
   const getSchoolCategory = (category: string): string => {
-    const categoryOption = schoolCategories.find((c: SelectOption) => c.value === category)
+    const categoryOption = schoolCategories.options.find((c: SelectOption) => c.value === category)
 
     if (categoryOption != null) {
       return categoryOption.label
@@ -68,6 +69,7 @@ const SchoolTable: React.FC<Props> = ({ schools, getSchoolPage, total }) => {
             onFilterChanged={(filter: string) => getSchoolPage(1, filter)}
           />
         )}
+        selectedRowKeys={highlightedRows}
         columns={columns}
         dataSource={schools}
         pagination={{

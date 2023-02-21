@@ -13,6 +13,7 @@ const { Title } = Typography
 
 const Schools: React.FunctionComponent = () => {
   const [schools, setSchools] = useState<School[]>([])
+  const [highlightedRows, setHighlightedRows] = useState<School[]>([])
   const [total, setTotal] = useState<number>(0)
   const [isFormVisible, setIsFormVisible] = useState(false)
 
@@ -39,7 +40,12 @@ const Schools: React.FunctionComponent = () => {
 
     const filteredData = schools.filter((s: any) => s.name !== school.name)
     filteredData.unshift(school)
+    highlightRow(school)
     setSchools(filteredData)
+  }
+
+  const highlightRow = (row: School): void => {
+    setHighlightedRows(currentRows => [...currentRows, row])
   }
 
   const getSchoolPage = (page: number, filter: string): void => {
@@ -59,6 +65,7 @@ const Schools: React.FunctionComponent = () => {
       <InlineTableFormSpace>
         <SchoolTable
           schools={schools}
+          highlightedRows={highlightedRows}
           getSchoolPage={getSchoolPage}
           total={total}
         />
