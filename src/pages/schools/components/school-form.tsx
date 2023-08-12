@@ -17,16 +17,18 @@ interface Props {
   editData: School | null
 }
 
-const CreateSchool: React.FC<Props> = ({ insertNewData, hideForm, editData }) => {
+const SchoolForm: React.FC<Props> = ({ insertNewData, hideForm, editData }) => {
   const [form] = Form.useForm()
   const schoolCategories = useSelector((state: Store) => state.constants.value.schoolCategories)
   const [districts, setDistricts] = useState<District[]>([])
   const [errorMessage, setErrorMessage] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
 
+  const isUpdating = editData !== null
+
   useEffect(() => {
     resetForm()
-    if (editData !== null) {
+    if (isUpdating) {
       form.setFieldsValue({
         name: editData.name,
         category: editData.category,
@@ -60,7 +62,12 @@ const CreateSchool: React.FC<Props> = ({ insertNewData, hideForm, editData }) =>
     setIsSubmitting(true)
 
     try {
-      const response = await SchoolsAPI.post('schools/', values)
+      let response = null
+      if (isUpdating) {
+        response = await SchoolsAPI.put(`schools/${editData.id}/`, values)
+      } else {
+        response = await SchoolsAPI.post('schools/', values)
+      }
       insertNewData(response.data)
     } catch (err) {
       setErrorMessage(getFirstErrorMessage(err))
@@ -106,7 +113,8 @@ const CreateSchool: React.FC<Props> = ({ insertNewData, hideForm, editData }) =>
       }}
     >
       <FormHeader>
-        <Title level={4} style={{ margin: '0' }}>Create School</Title>
+        <Title level={4} style={{ margin: '0' }}>
+          { isUpdating ? 'Update School' : 'Create School' }</Title>
         <Button type="default" onClick={() => hideForm()} shape="circle" icon={<CloseOutlined />}/>
       </FormHeader>
 
@@ -152,7 +160,7 @@ const CreateSchool: React.FC<Props> = ({ insertNewData, hideForm, editData }) =>
         </div>
         <Form.Item style={{ textAlign: 'right' }}>
           <Button type="primary" htmlType="submit">
-            Create
+            { isUpdating ? 'Update' : 'Create' }
           </Button>
         </Form.Item>
       </FormFooter>
@@ -160,4 +168,4 @@ const CreateSchool: React.FC<Props> = ({ insertNewData, hideForm, editData }) =>
   )
 }
 
-export default CreateSchool
+export default SchoolForm

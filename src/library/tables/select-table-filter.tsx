@@ -1,6 +1,6 @@
 import React, { useState, ReactNode } from 'react'
 import { Button, Card, Select, Space } from 'antd'
-import { PlusCircleOutlined, CloseCircleOutlined } from '@ant-design/icons'
+import { PlusCircleOutlined, CloseCircleOutlined, CloseOutlined } from '@ant-design/icons'
 import { SelectOption } from 'types'
 import { FilterWrapper, PillWrapper, FilterValue, OPEN_PANEL_NONE } from 'library/tables/table-filter-wrappers'
 
@@ -10,16 +10,19 @@ interface Props {
   options: SelectOption[]
   currentOpenPanel: number
   openPanel: Function
+  closePanel: Function
   applyFilter: Function
 }
 
 const SelectTableFilter: React.FC<Props> = ({
-  name, options, applyFilter, currentOpenPanel, openPanel, filterId
+  name, options, applyFilter, currentOpenPanel, openPanel, filterId, closePanel
 }) => {
-  const [option, setOption] = useState('')
-  const [appliedOption, setAppliedOption] = useState<string>('')
+  const [option, setOption] = useState<string | null>(null)
+  const [appliedOption, setAppliedOption] = useState<string | null>(null)
 
   const onApply = (): void => {
+    if (option === null) return
+
     setAppliedOption(option)
 
     const filter = `${name.toLowerCase()}=${option}`
@@ -29,7 +32,7 @@ const SelectTableFilter: React.FC<Props> = ({
   }
 
   const clearSelection = (): void => {
-    setAppliedOption('')
+    setAppliedOption(null)
     applyFilter('')
     openPanel(OPEN_PANEL_NONE)
   }
@@ -43,7 +46,7 @@ const SelectTableFilter: React.FC<Props> = ({
   }
 
   const getPillDisplayValue = (): ReactNode => {
-    if (appliedOption !== '') {
+    if (appliedOption !== null) {
       return (
         <FilterValue>
           <span>{name} | </span>
@@ -55,18 +58,19 @@ const SelectTableFilter: React.FC<Props> = ({
     return <span>{name}</span>
   }
 
-  const isFilterActive = appliedOption !== ''
+  const isFilterActive = appliedOption !== null
   const isPanelOpen = filterId === currentOpenPanel
   return (
     <FilterWrapper>
       {isPanelOpen && <Card
         size="small"
-        style={{ top: 50, position: 'absolute', width: 200 }}
-        title="Filter X"
+        style={{ top: 32, position: 'absolute', width: 200 }}
+        title={name}
+        extra={<CloseOutlined onClick={() => closePanel()} />}
       >
         <Space direction="vertical" style={{ width: '100%' }}>
           <Select
-            defaultValue="exact"
+            placeholder="Select"
             value={option}
             style={{ width: '100%' }}
             onChange={setOption}

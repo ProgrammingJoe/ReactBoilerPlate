@@ -1,6 +1,6 @@
 import React, { useState, ReactNode } from 'react'
 import { Button, Card, Select, Input, Space } from 'antd'
-import { PlusCircleOutlined, ArrowRightOutlined, CloseCircleOutlined } from '@ant-design/icons'
+import { PlusCircleOutlined, ArrowRightOutlined, CloseCircleOutlined, CloseOutlined } from '@ant-design/icons'
 import { FilterWrapper, PillWrapper, FilterValue, OPEN_PANEL_NONE } from 'library/tables/table-filter-wrappers'
 
 interface Props {
@@ -8,11 +8,12 @@ interface Props {
   filterId: number
   currentOpenPanel: number
   openPanel: Function
+  closePanel: Function
   applyFilter: Function
 }
 
 const QuantityTableFilter: React.FunctionComponent<Props> = ({
-  name, applyFilter, currentOpenPanel, openPanel, filterId
+  name, applyFilter, currentOpenPanel, openPanel, filterId, closePanel
 }) => {
   const [method, setMethod] = useState<string>('__exact')
   const [value, setValue] = useState<number>(NaN)
@@ -88,8 +89,9 @@ const QuantityTableFilter: React.FunctionComponent<Props> = ({
     <FilterWrapper>
       {isPanelOpen && <Card
         size="small"
-        style={{ top: 24, position: 'absolute', width: 200 }}
-        title="Filter X"
+        style={{ top: 32, position: 'absolute', width: 200 }}
+        title={`${name} Count`}
+        extra={<CloseOutlined onClick={() => closePanel()} />}
       >
         <Space direction="vertical">
           <Select

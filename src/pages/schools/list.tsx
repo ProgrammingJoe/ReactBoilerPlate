@@ -3,7 +3,7 @@ import { Typography, Button } from 'antd'
 
 import SchoolsAPI from 'plugins/schoolsAPI'
 import SchoolTable from './components/school-table'
-import CreateSchool from './components/create-school'
+import SchoolForm from './components/school-form'
 import BasicPage from 'library/page-templates/basic-page'
 import { School } from 'types'
 import { TABLE_PAGE_SIZE } from 'utils'
@@ -36,10 +36,16 @@ const Schools: React.FunctionComponent = () => {
     void getSchools(1, '')
   }, [])
 
+  useEffect(() => {
+    if (!isFormVisible) {
+      setEditData(null)
+    }
+  }, [isFormVisible])
+
   const insertNewData = (school: any): void => {
     setIsFormVisible(false)
 
-    const filteredData = schools.filter((s: any) => s.name !== school.name)
+    const filteredData = schools.filter((s: any) => s.id !== school.id)
     filteredData.unshift(school)
     highlightRow(school)
     setSchools(filteredData)
@@ -57,7 +63,6 @@ const Schools: React.FunctionComponent = () => {
   }
 
   const openEditForm = (row: School): void => {
-    console.log(row)
     setEditData(row)
     setIsFormVisible(true)
   }
@@ -80,7 +85,7 @@ const Schools: React.FunctionComponent = () => {
           total={total}
           editRow={openEditForm}
         />
-        {isFormVisible && <CreateSchool
+        {isFormVisible && <SchoolForm
           insertNewData={insertNewData}
           editData={editData}
           hideForm={() => setIsFormVisible(false)}

@@ -46,6 +46,7 @@ const SchoolTableFilters: React.FunctionComponent<Props> = ({ onFilterChanged })
       filterId={OPEN_PANEL_STUDENTS}
       currentOpenPanel={openPanel}
       openPanel={(panel: number) => setOpenPanel(panel)}
+      closePanel={() => setOpenPanel(OPEN_PANEL_NONE)}
       name="Students"
       applyFilter={applyAmountFilter}
     />
@@ -53,6 +54,7 @@ const SchoolTableFilters: React.FunctionComponent<Props> = ({ onFilterChanged })
       filterId={OPEN_PANEL_CATEGORY}
       currentOpenPanel={openPanel}
       openPanel={(panel: number) => setOpenPanel(panel)}
+      closePanel={() => setOpenPanel(OPEN_PANEL_NONE)}
       name="Category"
       applyFilter={setCategoryFilter}
       options={schoolCategories.options}

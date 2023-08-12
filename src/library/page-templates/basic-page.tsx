@@ -40,13 +40,19 @@ const BasicPage: React.FC<ProviderProps> = ({ children }) => {
   const navigate = useNavigate()
   const location = useLocation()
 
-  const [defaultState, setDefaultState] = useState('1')
-  const [collapsed, setCollapsed] = useState(false)
+  const determineKey = (): string => {
+    if (location.pathname.startsWith('/schools')) {
+      return '2'
+    }
+    return '1'
+  }
+
+  const [collapsed, setCollapsed] = useState(true)
+  const [selectedKey, setSelectedKey] = useState(determineKey)
 
   useEffect(() => {
-    const item = items.find((i) => i.location === location.pathname)
-    if (item?.key !== undefined) setDefaultState(String(item.key))
-  }, [])
+    setSelectedKey(determineKey)
+  }, [location.pathname])
 
   const navigateMenuItem = (menuItemKey: string): void => {
     const item = items.find((i) => i.key === menuItemKey)
@@ -56,10 +62,9 @@ const BasicPage: React.FC<ProviderProps> = ({ children }) => {
   return (
     <Layout style={{ minHeight: '100vh', maxWidth: '1280px' }}>
       <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
-        <div style={{ height: 32, margin: 16, background: 'rgba(255, 255, 255, 0.2)' }} />
         <Menu
           theme="dark"
-          selectedKeys={[defaultState]}
+          selectedKeys={[selectedKey]}
           mode="inline"
           items={items}
           onClick={(item) => navigateMenuItem(item.key)}

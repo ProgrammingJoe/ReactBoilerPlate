@@ -3,6 +3,7 @@ import { Table, Button } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import { useSelector } from 'react-redux'
 import styled from 'styled-components'
+import { useNavigate } from 'react-router-dom'
 
 import { School, District, SelectOption } from 'types'
 import { Store } from 'store/index'
@@ -22,6 +23,7 @@ const Wrapper = styled.div`
 `
 
 const SchoolTable: React.FC<Props> = ({ schools, getSchoolPage, total, highlightedRows, editRow }) => {
+  const navigate = useNavigate()
   const schoolCategories: any = useSelector((state: Store) => state.constants.value.schoolCategories)
 
   const getSchoolCategory = (category: string): string => {
@@ -62,7 +64,10 @@ const SchoolTable: React.FC<Props> = ({ schools, getSchoolPage, total, highlight
     {
       title: 'Action',
       key: 'action',
-      render: (row) => <Button type="dashed" onClick={() => editRow(row)}>Edit</Button>
+      render: (row: School) => (<div>
+        <Button type="dashed" onClick={() => navigate(`/schools/${row.id}/`)}>Edit2</Button>
+        <Button type="dashed" onClick={() => editRow(row)}>Edit</Button>
+      </div>)
     }
   ]
 
