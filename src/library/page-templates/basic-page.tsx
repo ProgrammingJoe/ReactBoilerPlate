@@ -47,7 +47,7 @@ const BasicPage: React.FC<ProviderProps> = ({ children }) => {
     return '1'
   }
 
-  const [collapsed, setCollapsed] = useState(true)
+  const [collapsed, setCollapsed] = useState(false)
   const [selectedKey, setSelectedKey] = useState(determineKey)
 
   useEffect(() => {

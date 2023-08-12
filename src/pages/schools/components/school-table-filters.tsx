@@ -25,7 +25,9 @@ const SchoolTableFilters: React.FunctionComponent<Props> = ({ onFilterChanged })
   }
 
   useEffect(() => {
-    createFilterString()
+    if (amountFilter !== '' || categoryFilter !== '') {
+      createFilterString()
+    }
   }, [amountFilter, categoryFilter])
 
   const createFilterString = (): void => {

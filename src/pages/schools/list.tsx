@@ -4,7 +4,6 @@ import { Typography, Button } from 'antd'
 import SchoolsAPI from 'plugins/schoolsAPI'
 import SchoolTable from './components/school-table'
 import SchoolForm from './components/school-form'
-import BasicPage from 'library/page-templates/basic-page'
 import { School } from 'types'
 import { TABLE_PAGE_SIZE } from 'utils'
 import { InlineTableFormSpace, TableHeader } from 'library/tables/table-wrappers'
@@ -68,7 +67,7 @@ const Schools: React.FunctionComponent = () => {
   }
 
   return (
-    <BasicPage>
+    <div>
       <TableHeader>
         <Title level={2}>Schools</Title>
         {!isFormVisible && (<Button
@@ -91,7 +90,7 @@ const Schools: React.FunctionComponent = () => {
           hideForm={() => setIsFormVisible(false)}
         />}
       </InlineTableFormSpace>
-    </BasicPage>
+    </div>
   )
 }
 
