@@ -1,5 +1,5 @@
 import React from 'react'
-import { Table } from 'antd'
+import { Table, Button } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import { useSelector } from 'react-redux'
 import styled from 'styled-components'
@@ -14,13 +14,14 @@ interface Props {
   highlightedRows: School[]
   getSchoolPage: (page: number, filter: string) => void
   total: number
+  editRow: Function
 }
 
 const Wrapper = styled.div`
   flex: 1;
 `
 
-const SchoolTable: React.FC<Props> = ({ schools, getSchoolPage, total }) => {
+const SchoolTable: React.FC<Props> = ({ schools, getSchoolPage, total, highlightedRows, editRow }) => {
   const schoolCategories: any = useSelector((state: Store) => state.constants.value.schoolCategories)
 
   const getSchoolCategory = (category: string): string => {
@@ -57,6 +58,11 @@ const SchoolTable: React.FC<Props> = ({ schools, getSchoolPage, total }) => {
       dataIndex: 'number_of_students',
       key: 'number_of_students',
       render: (numberOfStudents) => <span>{numberOfStudents}</span>
+    },
+    {
+      title: 'Action',
+      key: 'action',
+      render: (row) => <Button type="dashed" onClick={() => editRow(row)}>Edit</Button>
     }
   ]
 
@@ -69,7 +75,7 @@ const SchoolTable: React.FC<Props> = ({ schools, getSchoolPage, total }) => {
             onFilterChanged={(filter: string) => getSchoolPage(1, filter)}
           />
         )}
-        selectedRowKeys={highlightedRows}
+        rowClassName={(record, index) => index === 0 ? 'just-added-table-row' : 'default-table-row'}
         columns={columns}
         dataSource={schools}
         pagination={{

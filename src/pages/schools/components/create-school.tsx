@@ -14,12 +14,26 @@ const { Title, Text } = Typography
 interface Props {
   insertNewData: (value: School) => void
   hideForm: Function
+  editData: School | null
 }
 
-const CreateSchool: React.FC<Props> = ({ insertNewData, hideForm }) => {
+const CreateSchool: React.FC<Props> = ({ insertNewData, hideForm, editData }) => {
+  const [form] = Form.useForm()
   const schoolCategories = useSelector((state: Store) => state.constants.value.schoolCategories)
   const [districts, setDistricts] = useState<District[]>([])
   const [errorMessage, setErrorMessage] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  useEffect(() => {
+    resetForm()
+    if (editData !== null) {
+      form.setFieldsValue({
+        name: editData.name,
+        category: editData.category,
+        district_id: editData.district.id
+      })
+    }
+  }, [editData])
 
   useEffect(() => {
     const getDistricts = async (): Promise<void> => {
@@ -34,13 +48,25 @@ const CreateSchool: React.FC<Props> = ({ insertNewData, hideForm }) => {
     void getDistricts()
   }, [])
 
+  const resetForm = (): void => {
+    form.setFieldsValue({
+      name: '',
+      category: '',
+      district_id: ''
+    })
+  }
+
   const submitSchool = async (values: School): Promise<void> => {
+    setIsSubmitting(true)
+
     try {
       const response = await SchoolsAPI.post('schools/', values)
       insertNewData(response.data)
     } catch (err) {
       setErrorMessage(getFirstErrorMessage(err))
     }
+
+    setIsSubmitting(false)
   }
 
   const onFinish = (values: School): void => {
@@ -62,9 +88,11 @@ const CreateSchool: React.FC<Props> = ({ insertNewData, hideForm }) => {
 
   return (
     <Form
+      form={form}
       name="basic"
       layout="vertical"
       labelAlign="left"
+      disabled={isSubmitting}
       initialValues={{ remember: true }}
       onFinish={onFinish}
       onFinishFailed={onFinishFailed}

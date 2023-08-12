@@ -16,6 +16,7 @@ const Schools: React.FunctionComponent = () => {
   const [highlightedRows, setHighlightedRows] = useState<School[]>([])
   const [total, setTotal] = useState<number>(0)
   const [isFormVisible, setIsFormVisible] = useState(false)
+  const [editData, setEditData] = useState<School | null>(null)
 
   const getSchools = async (page: number, filter: string): Promise<void> => {
     const offset = page - 1
@@ -46,10 +47,19 @@ const Schools: React.FunctionComponent = () => {
 
   const highlightRow = (row: School): void => {
     setHighlightedRows(currentRows => [...currentRows, row])
+    setTimeout(() => {
+      setHighlightedRows(currentRows => currentRows.filter((r) => r.id !== row.id))
+    }, 1000)
   }
 
   const getSchoolPage = (page: number, filter: string): void => {
     void getSchools(page, filter)
+  }
+
+  const openEditForm = (row: School): void => {
+    console.log(row)
+    setEditData(row)
+    setIsFormVisible(true)
   }
 
   return (
@@ -68,11 +78,13 @@ const Schools: React.FunctionComponent = () => {
           highlightedRows={highlightedRows}
           getSchoolPage={getSchoolPage}
           total={total}
+          editRow={openEditForm}
         />
-        {isFormVisible && (<CreateSchool
+        {isFormVisible && <CreateSchool
           insertNewData={insertNewData}
+          editData={editData}
           hideForm={() => setIsFormVisible(false)}
-        />)}
+        />}
       </InlineTableFormSpace>
     </BasicPage>
   )

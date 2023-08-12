@@ -17,6 +17,21 @@ const GlobalStyle = createGlobalStyle`
       margin-bottom: 0px;
     }
   }
+
+  .just-added-table-row,
+  .default-table-row {
+    -webkit-transition: background-color 500ms linear;
+    -ms-transition: background-color 500ms linear;
+    transition: background-color 500ms linear;
+  }
+
+  .just-added-table-row {
+    background-color: aliceblue;
+  }
+
+  .default-table-row {
+    background-color: white;
+  }
 `
 
 export default GlobalStyle
