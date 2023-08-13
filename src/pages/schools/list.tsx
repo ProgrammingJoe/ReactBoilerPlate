@@ -3,8 +3,7 @@ import { Typography, Button } from 'antd'
 
 import SchoolsAPI from 'plugins/schoolsAPI'
 import SchoolTable from './components/school-table'
-import CreateSchool from './components/create-school'
-import BasicPage from 'library/page-templates/basic-page'
+import SchoolForm from './components/school-form'
 import { School } from 'types'
 import { TABLE_PAGE_SIZE } from 'utils'
 import { InlineTableFormSpace, TableHeader } from 'library/tables/table-wrappers'
@@ -36,10 +35,16 @@ const Schools: React.FunctionComponent = () => {
     void getSchools(1, '')
   }, [])
 
+  useEffect(() => {
+    if (!isFormVisible) {
+      setEditData(null)
+    }
+  }, [isFormVisible])
+
   const insertNewData = (school: any): void => {
     setIsFormVisible(false)
 
-    const filteredData = schools.filter((s: any) => s.name !== school.name)
+    const filteredData = schools.filter((s: any) => s.id !== school.id)
     filteredData.unshift(school)
     highlightRow(school)
     setSchools(filteredData)
@@ -57,13 +62,12 @@ const Schools: React.FunctionComponent = () => {
   }
 
   const openEditForm = (row: School): void => {
-    console.log(row)
     setEditData(row)
     setIsFormVisible(true)
   }
 
   return (
-    <BasicPage>
+    <div>
       <TableHeader>
         <Title level={2}>Schools</Title>
         {!isFormVisible && (<Button
@@ -80,13 +84,13 @@ const Schools: React.FunctionComponent = () => {
           total={total}
           editRow={openEditForm}
         />
-        {isFormVisible && <CreateSchool
+        {isFormVisible && <SchoolForm
           insertNewData={insertNewData}
           editData={editData}
           hideForm={() => setIsFormVisible(false)}
         />}
       </InlineTableFormSpace>
-    </BasicPage>
+    </div>
   )
 }
 

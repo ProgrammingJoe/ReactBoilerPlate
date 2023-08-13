@@ -1,13 +1,13 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { RouterProvider } from 'react-router-dom'
+import { BrowserRouter } from 'react-router-dom'
 
 import reportWebVitals from './reportWebVitals'
-import router from './router'
 import GlobalStyle from './globalStyles'
 import store from 'store/index'
 import { Provider } from 'react-redux'
 
+import App from './app'
 import BaseDataProvider from 'providers/baseDataProvider'
 import ThemeProvider from 'providers/themeProvider'
 
@@ -22,7 +22,9 @@ root.render(
     <ThemeProvider>
       <React.StrictMode>
         <GlobalStyle/>
-        <RouterProvider router={router} />
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
       </React.StrictMode>
     </ThemeProvider>
   </Provider>
